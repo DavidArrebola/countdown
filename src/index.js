@@ -1,17 +1,54 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const App = () => {
+  const [time, setTime] = useState(0);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+  useEffect(() => {
+    let myInterval = setInterval(() => {
+      if (time > 0) {
+        setTime(time - 1);
+      }
+      if (time === 0) {
+        clearInterval(myInterval);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
+
+  var isodate = new Date(time * 1000)
+    .toUTCString()
+    .match(/(\d\d:\d\d:\d\d)/)[0];
+
+  return (
+    <div className="ui container">
+      <h3>Time Remaining: {isodate}</h3>
+      <button className="ui button primary" onClick={() => useEffect}>
+        Start Timer
+      </button>
+      <div>
+        <h3>Set time</h3>
+        <div>
+          <p>Hours</p>
+          <button onClick={() => setTime(time + 3600)}>+</button>
+          <button onClick={() => setTime(time - 3600)}>-</button>
+        </div>
+        <div>
+          <p>Minutes</p>
+          <button onClick={() => setTime(time + 60)}>+</button>
+          <button onClick={() => setTime(time - 60)}>-</button>
+        </div>
+        <div>
+          <p>seconds</p>
+          <button onClick={() => setTime(time + 1)}>+</button>
+          <button onClick={() => setTime(time - 1)}>-</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector("#root"));
